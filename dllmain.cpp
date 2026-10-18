@@ -16,7 +16,7 @@ LOG_HANDLE* logger;
 
 COMMON_PLUGIN_TABLE common_plugin_table = {
 	L"object_split",
-	L"AviUtl無印のデフォルト挙動の分割・中間点追加コマンドを追加",
+	L"AviUtl無印の「中間点追加・分割時に中間の値を反映する」がオフの時の挙動と同じ分割・中間点追加のコマンドを追加する",
 };
 
 static std::wstring strtow(std::string_view str) {
