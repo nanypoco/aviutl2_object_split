@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="aviutl2_object_split.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
