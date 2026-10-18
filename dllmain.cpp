@@ -102,7 +102,7 @@ static void obj_split(EDIT_SECTION* edit, OBJECT_HANDLE obj, int frame){
 		}
 
 		int sec_num = edit->get_object_section_num(obj);
-		for(int i{1}; i < sec_num - 1; ++i){
+		for(int i{1}; i < sec_num; ++i){
 			int f = edit->get_object_section_frame(obj, i);
 			if (f < 0 || f > frame) break;
 			edit->delete_object_section(new_obj, 1);
