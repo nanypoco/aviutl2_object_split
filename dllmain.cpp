@@ -79,6 +79,15 @@ static bool replace_values(std::string& A, std::string& B) {
 	return true;
 }
 
+static bool replace_point(std::string& str, size_t num) {
+	const auto points = split(str);
+	if (points.size() < 3) return false;
+	if (num + 1 >= points.size()) return false;
+
+	replace(str, num, points[num + 1]);
+	return true;
+}
+
 static void obj_split(EDIT_SECTION* edit, OBJECT_HANDLE obj, int frame){
 		auto alias = edit->get_object_alias(obj);
 		if (!alias) {
@@ -116,15 +125,27 @@ static void obj_split(EDIT_SECTION* edit, OBJECT_HANDLE obj, int frame){
 			EFFECT_HANDLE eff;
 			EFFECT_HANDLE new_eff;
 			EDIT_SECTION* edit;
+			int frame;
 		};
 
 		for (const auto& [e, new_e] : std::ranges::zip_view(eff, new_eff)){
-			Param p{e, new_e, edit};
+			Param p{e, new_e, edit, frame};
 			edit_handle->enum_effect_item(edit->get_effect_name(e), static_cast<void*>(&p), [](void* param, LPCWSTR name, int type) {
-				if(type != EDIT_HANDLE::EFFECT_ITEM_TYPE_NUMBER) return; // トラックバー以外をスキップ
 				auto* p = static_cast<Param*>(param);
 				const EFFECT_HANDLE eff = p->eff;
 				const EFFECT_HANDLE new_eff = p->new_eff;
+				std::string a = p->edit->get_effect_item_value(new_eff, name);
+				if (type == EDIT_HANDLE::EFFECT_ITEM_TYPE_CHECK) { // チェックセクション
+					// 新しいオブジェクトの先頭の値を元のオブジェクトの最後の値に置き換える
+					std::string str = p->edit->get_effect_item_value(new_eff, name);
+					if (str.find(',') == std::string::npos) return; // 単体ならスキップ
+					bool val{};
+					p->edit->get_effect_check_value(eff, name, p->frame - 1, &val);
+					replace(str, 0, val ? "1" : "0");
+					p->edit->set_effect_item_value(new_eff, name, str.c_str());
+					return;
+				}
+				if (type != EDIT_HANDLE::EFFECT_ITEM_TYPE_NUMBER) return; // トラックバー以外をスキップ
 
 				TRACK_INFO info{};
 				p->edit->get_effect_track_info(eff, name, &info, sizeof(TRACK_INFO));
@@ -151,15 +172,6 @@ static int get_frame(EDIT_SECTION* edit, bool is_click){
 		return frame;
 	}
 	return edit->info->frame; // カーソル位置
-}
-
-static bool replace_point(std::string& str, size_t num) {
-	const auto points = split(str);
-	if (points.size() < 3) return false;
-	if (num + 1 >= points.size()) return false;
-
-	replace(str, num, points[num + 1]);
-	return true;
 }
 
 static void add_point(EDIT_SECTION* edit, OBJECT_HANDLE obj, int frame) {
