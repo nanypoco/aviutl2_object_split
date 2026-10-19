@@ -24,6 +24,7 @@
     <ProjectGuid>{52B3B6C5-CC10-467F-B5F3-BE31D5C465DF}</ProjectGuid>
     <RootNamespace>aviutl2_split</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>aviutl2_object_split</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
